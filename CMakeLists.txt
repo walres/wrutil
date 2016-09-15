@@ -18,7 +18,6 @@ project(wrutil CXX C)
 cmake_minimum_required(VERSION 2.6)
 enable_testing()
 
-include(CheckCXXCompilerFlag)
 include(CheckCXXSourceCompiles)
 include(CheckCXXSourceRuns)
 include(CheckTypeSize)
@@ -32,65 +31,7 @@ set(WRUTIL_VERSION_PATCH 0)
 #
 # C++ Language Configuration
 #
-check_cxx_compiler_flag(-std=c++11 CXX11_STD_FLAG)
-if (CXX11_STD_FLAG)
-        set(CXX11_STD_FLAG -std=c++11)
-else()
-        check_cxx_compiler_flag(-std=c++0x CXX0X_STD_FLAG)
-        if (CXX0X_STD_FLAG)
-                set(CXX11_STD_FLAG -std=c++0x)
-        endif()
-endif()
-
-check_cxx_compiler_flag(-std=c++14 CXX14_STD_FLAG)
-if (CXX14_STD_FLAG)
-        set(CXX14_STD_FLAG -std=c++14)
-else()
-        check_cxx_compiler_flag(-std=c++1y CXX1Y_STD_FLAG)
-        if (CXX1Y_STD_FLAG)
-                set(CXX14_STD_FLAG -std=c++1y)
-        endif()
-endif()
-
-check_cxx_compiler_flag(-std=c++17 CXX17_STD_FLAG)
-if (CXX17_STD_FLAG)
-        set(CXX17_STD_FLAG -std=c++17)
-else()
-        check_cxx_compiler_flag(-std=c++1z CXX1Z_STD_FLAG)
-        if (CXX1Z_STD_FLAG)
-                set(CXX17_STD_FLAG -std=c++1z)
-        endif()
-endif()
-
-if (CXX17_STD_FLAG AND USE_CXX17)
-        set(CXX_CHOSEN_STD_FLAG ${CXX17_STD_FLAG})
-elseif (CXX14_STD_FLAG AND USE_CXX14)
-        set(CXX_CHOSEN_STD_FLAG ${CXX14_STD_FLAG})
-elseif (CXX11_STD_FLAG)
-        set(CXX_CHOSEN_STD_FLAG ${CXX11_STD_FLAG})
-endif()
-
-if (CXX_CHOSEN_STD_FLAG)
-        message("Compiling with ${CXX_CHOSEN_STD_FLAG}")
-        add_definitions(${CXX_CHOSEN_STD_FLAG})
-endif()
-
-if (NOT WIN32)
-        set(CHECK_CXX_CODE "int __attribute__((visibility(\"hidden\"))) foo() { return 0\; }\nint main() { return foo()\; }")
-        check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_ELF_VISIBILITY_ATTR)
-endif()
-
-if (WR_HAVE_ELF_VISIBILITY_ATTR)
-        check_cxx_compiler_flag(-fvisibility=hidden HAVE_ELF_VISIBILITY_FLAG)
-        if (HAVE_ELF_VISIBILITY_FLAG)
-                set(SO_FLAGS "${SO_FLAGS} -fvisibility=hidden")
-        endif()
-        check_cxx_compiler_flag(-fvisibility-inlines-hidden
-                                HAVE_ELF_INLINE_VISIBILITY_FLAG)
-        if (HAVE_ELF_INLINE_VISIBILITY_FLAG)
-                set(SO_FLAGS "${SO_FLAGS} -fvisibility-inlines-hidden")
-        endif()
-endif()
+include(cmake/compiler-config.cmake)
 
 math(EXPR WR_WORDSIZE "${CMAKE_SIZEOF_VOID_P} * 8")
 
@@ -442,6 +383,7 @@ if (UNIX)
         list(APPEND WRUTIL_SOURCES src/TestManager_posix.cxx)
         list(APPEND WRUTIL_SOURCES src/ustreambuf_posix.cxx)
         list(APPEND WRDEBUG_SOURCES src/ExceptionTrace_posix.cxx)
+        list(APPEND WRUTIL_SYS_LIBS dl)
         list(APPEND WRDEBUG_SYS_LIBS dl)
 elseif (WIN32)
         list(APPEND WRUTIL_SOURCES src/StdioFilePtr_win32.cxx)
@@ -482,14 +424,15 @@ if (UNIX)
 endif()
 
 add_library(wrutil SHARED ${WRUTIL_SOURCES} ${WRUTIL_HEADERS})
-add_library(wrutil_static STATIC ${WRUTIL_SOURCES} ${WRUTIL_HEADERS})
-add_library(wrdebug SHARED ${WRDEBUG_SOURCES} ${WRDEBUG_HEADERS})
-
 target_link_libraries(wrutil ${WRUTIL_SYS_LIBS})
+
+add_library(wrutil_static STATIC ${WRUTIL_SOURCES} ${WRUTIL_HEADERS})
+
+add_library(wrdebug SHARED ${WRDEBUG_SOURCES} ${WRDEBUG_HEADERS})
 target_link_libraries(wrdebug ${WRDEBUG_SYS_LIBS})
 
 set_target_properties(wrutil wrdebug PROPERTIES
-        COMPILE_FLAGS "${SO_FLAGS}"
+        COMPILE_FLAGS "${WR_SOFLAGS}"
         SOVERSION ${WRUTIL_VERSION_MAJOR}
         VERSION ${WRUTIL_VERSION_MAJOR}.${WRUTIL_VERSION_MINOR}.${WRUTIL_VERSION_PATCH}
 )
@@ -541,7 +484,7 @@ set_target_properties(wrutil wrutil_static wrdebug unidatagen
 # Installation
 #
 install(TARGETS wrutil wrutil_static wrdebug
-        EXPORT wrutil
+        EXPORT wrutil-targets
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
@@ -557,4 +500,16 @@ install(DIRECTORY include/wrutil ${CMAKE_CURRENT_BINARY_DIR}/include/wrutil
                          WORLD_READ
 )
 
-install(EXPORT wrutil DESTINATION share/wrutil)
+install(EXPORT wrutil-targets DESTINATION share/wrutil)
+
+configure_file(cmake/wrutil-config.cmake.in wrutil-config.cmake @ONLY)
+configure_file(cmake/wrutil-config-internal.cmake.in
+               wrutil-config-internal.cmake @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/wrutil-config.cmake
+              cmake/compiler-config.cmake
+        DESTINATION share/wrutil
+        PERMISSIONS OWNER_READ OWNER_WRITE
+                    GROUP_READ
+                    WORLD_READ
+)
