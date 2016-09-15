@@ -87,14 +87,12 @@ public:
         }
 
 protected:
-#if 0
         char_type *eback() const { return base_type::eback(); }
         char_type *gptr() const  { return base_type::gptr(); }
         char_type *egptr() const { return base_type::egptr(); }
         char_type *pbase() const { return base_type::pbase(); }
         char_type *pptr() const  { return base_type::pptr(); }
         char_type *epptr() const { return base_type::epptr(); }
-#endif
 
         virtual pos_type
         seekoff(
@@ -143,55 +141,6 @@ protected:
         virtual pos_type seekpos(pos_type pos,
                                  std::ios_base::openmode which) override
                 { return seekoff(off_type(pos), std::ios_base::beg, which); }
-#if 0
-        virtual int_type
-        underflow() override
-        {
-                if (gptr() < egptr()) {
-                        return int_type(*gptr());
-                } else {
-                        return traits_type::eof();
-                }
-        }
-
-        virtual std::streamsize
-        xsgetn(
-                char_type       *buf,
-                std::streamsize  count
-        ) override
-        {
-                if (count > 0) {
-                        count = std::min(count, base_type::in_avail());
-                        traits_type::copy(buf, gptr(),
-                                          numeric_cast<size_t>(count));
-                        /* don't use gbump() as it takes int which may be
-                           narrower than std::streamsize */
-                        base_type::setg(eback(), gptr() + count, egptr());
-                        return count;
-                } else {
-                        return 0;
-                }
-        }
-
-        virtual std::streamsize
-        xsputn(
-                const char_type *buf,
-                std::streamsize  count
-        ) override
-        {
-                if (count > 0) {
-                        count = std::min(count,
-                                         std::streamsize(epptr() - pptr()));
-                        count = std::min(count, std::streamsize(INT_MAX));
-                        traits_type::copy(pptr(), buf,
-                                          numeric_cast<size_t>(count));
-                        base_type::pbump(int(count));
-                        return count;
-                } else {
-                        return 0;
-                }
-        }
-#endif
 };
 
 using arraybuf = basic_arraybuf<char>;
