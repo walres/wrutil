@@ -87,7 +87,7 @@ WRUTIL_API uint8_t utf16_seq(char32_t in, char16_t *out);
 template <typename Traits = std::char_traits<char16_t>,
           typename Alloc = std::allocator<char16_t>>
 std::basic_string<char16_t, Traits, Alloc> &
-operator+=(
+utf16_append(
         std::basic_string<char16_t, Traits, Alloc> &str,
         char32_t                                    c
 )
@@ -107,7 +107,7 @@ operator+=(
 template <typename Traits = std::char_traits<wchar_t>,
           typename Alloc = std::allocator<wchar_t>>
 std::basic_string<wchar_t, Traits, Alloc> &
-operator+=(
+wstr_append(
         std::basic_string<wchar_t, Traits, Alloc> &str,
         char32_t                                   c
 )

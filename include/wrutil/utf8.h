@@ -83,7 +83,7 @@ WRUTIL_API std::string u8strerror(int errnum);
 template <typename Traits = std::char_traits<char>,
           typename Alloc = std::allocator<char>>
 std::basic_string<char, Traits, Alloc> &
-operator+=(
+utf8_append(
         std::basic_string<char, Traits, Alloc> &str,
         char32_t                                c
 )
