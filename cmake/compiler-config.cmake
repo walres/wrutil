@@ -82,3 +82,14 @@ if (WR_HAVE_ELF_VISIBILITY_ATTR)
                 set(WR_SOFLAGS "${WR_SOFLAGS} -fvisibility-inlines-hidden")
         endif()
 endif()
+
+if (MSVC)
+        add_definitions("/wd4996 /wd4251 /DBOOST_ALL_NO_LIB")
+endif()
+
+if (WIN32)
+        add_definitions("-DNOMINMAX -DUNICODE")
+endif()
+
+add_definitions("-DBOOST_NO_AUTO_PTR")
+        # avoid deprecation warnings for std::auto_ptr, which we don't use

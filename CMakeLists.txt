@@ -29,24 +29,13 @@ set(WRUTIL_VERSION_PATCH 0)
 
 ########################################
 #
-# C++ Language Configuration
+# C++ Compiler Configuration
 #
 include(cmake/compiler-config.cmake)
 
 math(EXPR WR_WORDSIZE "${CMAKE_SIZEOF_VOID_P} * 8")
 
 check_type_size(wchar_t WR_SIZEOF_WCHAR_T)
-
-if (MSVC)
-        add_definitions("/wd4996 -DBOOST_ALL_NO_LIB")
-endif()
-
-if (WIN32)
-        add_definitions("-DNOMINMAX -DUNICODE")
-endif()
-
-add_definitions("-DBOOST_NO_AUTO_PTR")
-        # avoid deprecation warnings for std::auto_ptr, which we don't use
 
 ########################################
 #
