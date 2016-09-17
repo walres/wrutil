@@ -128,7 +128,7 @@ public:
         const node_ptr_type *last() const { return last_; }
         const node_ptr_type node() const { return pos_; }
         explicit operator node_ptr_type() const { return node(); }
-        explicit operator bool() const { return node(); }
+        explicit operator bool() const { return (node() != nullptr); }
 
 
         const node_ptr_type *last_;
