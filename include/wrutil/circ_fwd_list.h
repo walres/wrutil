@@ -35,6 +35,9 @@
 namespace wr {
 
 
+template <typename Node, typename Traits> class intrusive_circ_fwd_list;
+
+
 template <typename Traits>
 class circ_fwd_list_iterator
 {
@@ -42,6 +45,7 @@ public:
         using this_type = circ_fwd_list_iterator;
         using traits_type = Traits;
         using node_ptr_type = typename traits_type::node_ptr_type;
+        using node_ptr_ret_type = typename traits_type::node_ptr_ret_type;
         using value_type = typename traits_type::value_type;
         using pointer = typename traits_type::pointer;
         using reference = typename traits_type::reference;
@@ -55,9 +59,7 @@ public:
         // support copying const-type iterators to non-const-type iterators
         template <typename X>
         circ_fwd_list_iterator(const circ_fwd_list_iterator<X> &other) :
-                  last_(other.last()),
-                  pos_ (static_cast<typename circ_fwd_list_iterator<X>::
-                                                node_ptr_type>(other)) {}
+                  last_(other.last_), pos_(other.pos_) {}
 
         circ_fwd_list_iterator(const node_ptr_type *last, node_ptr_type pos) :
                 last_(last), pos_(pos) {}
@@ -125,11 +127,14 @@ public:
                 std::swap(pos_, other.pos_);
         }
 
-        const node_ptr_type *last() const { return last_; }
-        const node_ptr_type node() const { return pos_; }
-        explicit operator node_ptr_type() const { return node(); }
+        node_ptr_ret_type node() const { return pos_; }
+        explicit operator node_ptr_ret_type() const { return node(); }
         explicit operator bool() const { return (node() != nullptr); }
 
+private:
+        template <typename> friend class circ_fwd_list_iterator;
+        friend intrusive_circ_fwd_list<typename traits_type::node_type,
+                                       typename traits_type::list_traits>;
 
         const node_ptr_type *last_;
         node_ptr_type        pos_;
@@ -142,6 +147,7 @@ struct intrusive_list_traits
 {
         using node_type = Node;
         using node_ptr_type = node_type *;
+        using const_node_ptr_type = const node_type *;
         using value_type = node_type;
         using reference = node_type &;
         using const_reference = const node_type &;
@@ -192,13 +198,25 @@ public:
         using difference_type = typename traits_type::difference_type;
         using allocator_type = typename traits_type::allocator_type;
         using allocator_traits = typename traits_type::allocator_traits;
-        using iterator = circ_fwd_list_iterator<traits_type>;
+
+        struct iterator_traits : intrusive_circ_fwd_list::traits_type
+        {
+                using this_type = iterator_traits;
+                using list_traits = intrusive_circ_fwd_list::traits_type;
+                using node_ptr_ret_type = node_ptr_type;
+        };
+
+        using iterator = circ_fwd_list_iterator<iterator_traits>;
         using reverse_iterator = std::reverse_iterator<iterator>;
 
-        struct const_iterator_traits : traits_type
+        struct const_iterator_traits : intrusive_circ_fwd_list::traits_type
         {
-                using pointer = const_pointer;
-                using reference = const_reference;
+                using this_type = const_iterator_traits;
+                using list_traits = intrusive_circ_fwd_list::traits_type;
+                using node_ptr_ret_type
+                        = typename list_traits::const_node_ptr_type;
+                using pointer = typename list_traits::const_pointer;
+                using reference = typename list_traits::const_reference;
         };
 
         using const_iterator = circ_fwd_list_iterator<const_iterator_traits>;
@@ -422,7 +440,7 @@ public:
         )
         {
                 if (!empty()) {
-                        auto prev = pos.node();
+                        auto prev = pos.pos_;
 
                         if (!prev) {  // insert at beginning
                                 prev = last_;
@@ -431,7 +449,7 @@ public:
                         auto old_next = traits_type::next_node(prev);
                         traits_type::set_next_node(prev, node);
 
-                        if (pos.node() == last_) {
+                        if (pos.pos_ == last_) {
                                 last_ = node;
                         }
 
@@ -770,7 +788,7 @@ public:
                         return end();
                 }
 
-                auto before = first.node(), after = last.node();
+                auto before = first.pos_, after = last.pos_;
 
                 if (!before) {
                         before = last_;
@@ -814,7 +832,7 @@ public:
         )
         {
                 for (auto i = before_begin(); i != last(); ++i) {
-                        if (std::next(i).node() == node) {
+                        if (std::next(i).pos_ == node) {
                                 return detach_after(i);
                         }
                 }
@@ -872,7 +890,7 @@ public:
                         return nullptr;
                 }
 
-                auto before = first.node(), after = last.node();
+                auto before = first.pos_, after = last.pos_;
 
                 if (!before) {
                         before = last_;
@@ -964,7 +982,7 @@ public:
                         if (empty()) {
                                 last_ = other.last_;
                         } else {
-                                auto pos_node = pos.node();
+                                auto pos_node = pos.pos_;
                                 if (!pos_node) {
                                         pos_node = last_;
                                 } else if (pos_node == last_) {
@@ -995,7 +1013,7 @@ public:
                 const_iterator  i
         )
         {
-                auto i_node = i.node();
+                auto i_node = i.pos_;
                 if (!i_node) {
                         i_node = other.last_;
                 }
@@ -1017,7 +1035,7 @@ public:
                         last_ = target;
                         traits_type::set_next_node(target, last_);
                 } else {
-                        auto pos_node = pos.node();
+                        auto pos_node = pos.pos_;
                         if (!pos_node) {
                                 pos_node = last_;
                         } else if (pos_node == last_) {
@@ -1119,7 +1137,7 @@ public:
         )
         {
                 for (auto i = before_begin(); i != last(); ++i) {
-                        if (node == std::next(i).node()) {
+                        if (node == std::next(i).pos_) {
                                 erase_after(i);
                                 i = last();
                         }
