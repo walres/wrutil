@@ -202,8 +202,8 @@ public:
         struct iterator_traits : intrusive_circ_fwd_list::traits_type
         {
                 using this_type = iterator_traits;
-                using list_traits = intrusive_circ_fwd_list::traits_type;
-                using node_ptr_ret_type = node_ptr_type;
+                using list_traits = Traits;
+                using node_ptr_ret_type = typename list_traits::node_ptr_type;
         };
 
         using iterator = circ_fwd_list_iterator<iterator_traits>;
@@ -212,7 +212,7 @@ public:
         struct const_iterator_traits : intrusive_circ_fwd_list::traits_type
         {
                 using this_type = const_iterator_traits;
-                using list_traits = intrusive_circ_fwd_list::traits_type;
+                using list_traits = Traits;
                 using node_ptr_ret_type
                         = typename list_traits::const_node_ptr_type;
                 using pointer = typename list_traits::const_pointer;
