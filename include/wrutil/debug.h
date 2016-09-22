@@ -53,11 +53,11 @@
 extern "C" {
 
 WRDEBUG_API void wr_dumpException(std::ostream &dest,
-                                  const char *prefix = nullptr) noexcept;
+                                  const char *prefix = nullptr);
 
 WRDEBUG_API void wr_dumpExceptionFileLine(std::ostream &dest, const char *file,
                                          unsigned int line,
-                                         const char *prefix = nullptr) noexcept;
+                                         const char *prefix = nullptr);
 
 } // extern "C"
 
@@ -69,12 +69,12 @@ WRDEBUG_API const std::type_info *lastExceptionThrown() noexcept;
 WRDEBUG_API const void * const *exceptionStackTrace(size_t &size_out) noexcept;
 
 inline void dumpException(std::ostream &dest,
-                          const char *prefix = nullptr) noexcept
+                          const char *prefix = nullptr)
         { return wr_dumpException(dest, prefix); }
 
 inline void dumpException(std::ostream &dest, const char *file,
                           unsigned int line,
-                          const char *prefix = nullptr) noexcept
+                          const char *prefix = nullptr)
         { return wr_dumpExceptionFileLine(dest, file, line, prefix); }
 
 

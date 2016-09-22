@@ -211,7 +211,7 @@ wr_dumpExceptionFileLine(
         const char   *file,
         unsigned int  line,
         const char   *prefix
-) noexcept
+)
 {
         if (!stack_trace_size) {
                 return;

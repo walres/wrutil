@@ -72,7 +72,7 @@ exceptionStackTrace(
 //--------------------------------------
 
 extern "C" WRDEBUG_API void
-wr_dumpException(std::ostream &dest, const char *prefix) noexcept
+wr_dumpException(std::ostream &dest, const char *prefix)
 {
         dumpException(dest, nullptr, 0, prefix);
 }
