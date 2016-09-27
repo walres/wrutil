@@ -27,6 +27,10 @@ set(WRUTIL_VERSION_MAJOR 0)
 set(WRUTIL_VERSION_MINOR 1)
 set(WRUTIL_VERSION_PATCH 0)
 
+if (NOT TOP_BUILD_DIR)
+        set(TOP_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
 ########################################
 #
 # C++ Compiler Configuration
@@ -463,9 +467,9 @@ endforeach(TEST)
 #
 set_target_properties(wrutil wrutil_static wrdebug unidatagen
         PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY bin
-        ARCHIVE_OUTPUT_DIRECTORY lib
-        LIBRARY_OUTPUT_DIRECTORY lib
+        RUNTIME_OUTPUT_DIRECTORY ${TOP_BUILD_DIR}/bin
+        ARCHIVE_OUTPUT_DIRECTORY ${TOP_BUILD_DIR}/lib
+        LIBRARY_OUTPUT_DIRECTORY ${TOP_BUILD_DIR}/lib
 )
 
 ########################################
