@@ -74,11 +74,12 @@ public:
         circ_fwd_list_iterator &
         operator++()
         {
-                if (!pos_) {
-                        pos_ = traits_type::next_node(*last_);
-                } else if (pos_ == (*last_)) {
+                if (pos_ == (*last_)) {  // *this == last; go to end
                         pos_ = nullptr;
                 } else {
+                        if (!pos_) {  // *this == end; go to beginning
+                                pos_ = *last_;
+                        }
                         pos_ = traits_type::next_node(pos_);
                 }
                 return *this;
@@ -117,6 +118,58 @@ public:
         template <typename U> bool
                 operator!=(const circ_fwd_list_iterator<U> &other) const
                         { return pos_ != other.pos_; }
+
+        template <typename U> bool
+                operator<=(const circ_fwd_list_iterator<U> &other) const
+                        { return pos_ <= other.pos_; }
+
+        template <typename U> bool
+                operator<(const circ_fwd_list_iterator<U> &other) const
+                        { return pos_ < other.pos_; }
+
+        template <typename U> bool
+                operator>=(const circ_fwd_list_iterator<U> &other) const
+                        { return pos_ >= other.pos_; }
+
+        template <typename U> bool
+                operator>(const circ_fwd_list_iterator<U> &other) const
+                        { return pos_ > other.pos_; }
+
+        friend bool operator==(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ == b; }
+
+        friend bool operator==(node_ptr_ret_type a, const this_type &b)
+                { return a == b.pos_; }
+
+        friend bool operator!=(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ != b; }
+
+        friend bool operator!=(node_ptr_ret_type a, const this_type &b)
+                { return a != b.pos_; }
+
+        friend bool operator<=(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ <= b; }
+
+        friend bool operator<=(node_ptr_ret_type a, const this_type &b)
+                { return a <= b.pos_; }
+
+        friend bool operator<(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ < b; }
+
+        friend bool operator<(node_ptr_ret_type a, const this_type &b)
+                { return a < b.pos_; }
+
+        friend bool operator>=(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ >= b; }
+
+        friend bool operator>=(node_ptr_ret_type a, const this_type &b)
+                { return a >= b.pos_; }
+
+        friend bool operator>(const this_type &a, node_ptr_ret_type b)
+                { return a.pos_ > b; }
+
+        friend bool operator>(node_ptr_ret_type a, const this_type &b)
+                { return a > b.pos_; }
 
         void
         swap(
@@ -223,7 +276,9 @@ public:
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
         /// \brief Construct empty list with default allocator
-        intrusive_circ_fwd_list() = default;
+        intrusive_circ_fwd_list() {} /* = default; */
+                /* NB: GCC 4.x gets confused by '= default' used with
+                   default constructor */
 
         /**
          * \brief Construct empty list with specified allocator
@@ -1468,7 +1523,9 @@ public:
         using const_reverse_iterator
                 = typename inner_type::const_reverse_iterator;
 
-        circ_fwd_list() = default;
+        circ_fwd_list() {} /* = default; */
+                /* NB: GCC 4.x gets confused by '= default' used with
+                   default constructor */
 
         explicit circ_fwd_list(const allocator_type &alloc) :
                 list_(alloc) {}

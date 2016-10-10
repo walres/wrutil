@@ -28,6 +28,7 @@
 #include <wrutil/circ_fwd_list.h>
 #include <wrutil/debug.h>  // add wrdebug library dependency
 #include <wrutil/Format.h>
+#include <wrutil/string_view.h>
 #include <wrutil/TestManager.h>
 
 /*
@@ -415,6 +416,40 @@ main(
                 l.unique();
                 if (l != expected) {
                         throw TestFailure("l = %s, expected %s", l, expected);
+                }
+        });
+
+        tester.run("IterWrap", 1, [] {
+                std::string                  s;
+                circ_fwd_list<int>           l        = { 1, 2, 3 };
+                static const wr::string_view expected = "1 2 3 1 2 3 ";
+
+                auto i = l.begin();
+                for (int n = 2; n > 0; --n, ++i) {
+                        for (; i != l.end(); ++i) {
+                                s += std::to_string(*i);
+                                s += ' ';
+                        }
+                }
+
+                if (s != expected) {
+                        throw TestFailure("s = \"%s\", expected \"%s\"",
+                                          s, expected);
+                }
+        });
+
+        tester.run("IterWrap", 2, [] {  // test iterator wrap on empty list
+                circ_fwd_list<int> l = {};
+
+                auto i = l.begin();
+                for (int n = 2; n > 0; --n, ++i) {
+                        while (i != l.end()) {
+                                ++i;
+                        }
+                }
+
+                if (i != l.begin()) {
+                        throw TestFailure("i != l.begin()");
                 }
         });
 
