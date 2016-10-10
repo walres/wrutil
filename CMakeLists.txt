@@ -410,9 +410,9 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src/ucd/GeneralCategories.
 
 if (UNIX)
         if (NOT WIN32)  # not Cygwin
-                list(APPEND CMAKE_EXE_LINKER_FLAGS -Wl,-E)
-                list(APPEND CMAKE_MODULE_LINKER_FLAGS -Wl,-E)
-                list(APPEND CMAKE_SHARED_LINKER_FLAGS -Wl,-E)
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E")
+                set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-E")
+                set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-E")
         endif()
 endif()
 
