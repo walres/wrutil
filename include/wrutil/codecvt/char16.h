@@ -17,8 +17,6 @@
 
 #if !WR_HAVE_STD_CODECVT_CHAR16
 
-#include <wrutil/ImportExport.h>
-
 
 namespace std {
 
