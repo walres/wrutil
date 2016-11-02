@@ -59,7 +59,7 @@ public:
         // support copying const-type iterators to non-const-type iterators
         template <typename X>
         circ_fwd_list_iterator(const circ_fwd_list_iterator<X> &other) :
-                  last_(other.last_), pos_(other.pos_) {}
+                  last_(other.last_), pos_(other.node()) {}
 
         circ_fwd_list_iterator(const node_ptr_type *last, node_ptr_type pos) :
                 last_(last), pos_(pos) {}
@@ -106,7 +106,7 @@ public:
         )
         {
                 last_ = other.last_;
-                pos_ = other.pos_;
+                pos_ = other.node();
                 return *this;
         }
 
@@ -530,10 +530,11 @@ public:
                 const value_type &value
         )
         {
+                iterator i(pos.last_, pos.pos_);
                 while (count--) {
-                        pos = insert_after(pos, make_node(value));
+                        i = insert_after(i, make_node(value));
                 }
-                return pos;
+                return i;
         }
 
         template <typename InIter> iterator
@@ -543,10 +544,11 @@ public:
                 InIter         last
         )
         {
+                iterator i(pos.last_, pos.pos_);
                 for (; first != last; ++first) {
-                        pos = insert_after(pos, make_node(*first));
+                        i = insert_after(i, make_node(*first));
                 }
-                return pos;
+                return i;
         }
 
         iterator insert_after(const_iterator pos,
@@ -829,7 +831,7 @@ public:
          *      position of the node after the last one to be erased (or
          *      \c end() to remove the last node)
          * \return
-         *      == \c last
+         *      iterator set to same position as \c last
          * \see
          *      pop_front(), detach_after(), detach_front(), clear()
          */
@@ -839,8 +841,10 @@ public:
                 const_iterator last
         )
         {
-                if (empty()) {
-                        return end();
+                iterator result(last.last_, last.pos_);
+
+                if (empty() || (std::next(first) == last)) {
+                        return result;
                 }
 
                 auto before = first.pos_, after = last.pos_;
@@ -852,7 +856,8 @@ public:
                         after = traits_type::next_node(last_);
                 }
 
-                return iterator(&last_, unlink_nodes(before, after, true));
+                unlink_nodes(before, after, true);
+                return result;
         }
 
         /**
@@ -1332,8 +1337,8 @@ protected:
          * \return
          *      \li \c nullptr when <tt>(destroy == true)</tt> and an
          *              empty range is specified
-         *      \li \c after when <tt>(destroy == true)</tt> and a non-
-         *              empty range is specified
+         *      \li \c after when <tt>(destroy == true)</tt> and a
+         *              nonempty range is specified
          *      \li pointer to first node in the unlinked range when
          *              <tt>(destroy == false)</tt>
          * \see

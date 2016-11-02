@@ -271,10 +271,18 @@ main(
                 if (l != expected1) {
                         throw TestFailure("l = %s, expected %s", l, expected1);
                 }
-                auto fi = std::next(l.begin()), la = std::next(fi, 3);
-                l.erase_after(fi, la);
+                auto first = std::next(l.begin()), last = std::next(first, 3);
+                l.erase_after(first, last);
                 if (l != expected2) {
                         throw TestFailure("l = %s, expected %s", l, expected2);
+                }
+        });
+
+        tester.run("EraseAfter", 2, [] {
+                circ_fwd_list<int> l = { 1, 2, 3 }, expected = l;
+                l.erase_after(l.before_begin(), l.begin());
+                if (l != expected) {
+                        throw TestFailure("l = %s, expected %s", l, expected);
                 }
         });
 
