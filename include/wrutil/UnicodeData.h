@@ -254,16 +254,20 @@ template <typename T> inline T lookup(const int16_t *page_index,
         { return pages[page_index[c >> 8]][c & 0xff]; }
 
 inline uint8_t category(char32_t c)
-        { return lookup(category_index, category_page, c); }
+        { return (c < CODE_SPACE_SIZE) ?
+                lookup(category_index, category_page, c) : UNASSIGNED; }
 
 inline uint8_t major_category(char32_t c)
         { return category(c) & MAJOR_CATEGORY_MASK; }
 
 inline uint64_t properties(char32_t c)
-        { return lookup(property_index, property_page, c); }
+        { return (c < CODE_SPACE_SIZE) ?
+                lookup(property_index, property_page, c)
+                : NONCHARACTER_CODE_POINT; }
 
 inline std::ctype_base::mask class_(char32_t c)
-        { return ucd::lookup(ucd::char_class_index, ucd::char_class_page, c); }
+        { return (c < CODE_SPACE_SIZE) ?
+                lookup(ucd::char_class_index, ucd::char_class_page, c) : 0; }
 
 
 } // namespace ucd
