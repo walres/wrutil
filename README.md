@@ -10,13 +10,9 @@
 
 ## Current Status
 
-The current version of `wrutil` is 0.1.0.
+The current version of `wrutil` is 0.2.0.
 
 **At present `wrutil` is in an experimental state and therefore neither its API nor its ABI are stable. Some components are more mature than others.** The library is structured such that it is straightforward to transplant portions of its code into other projects if that is preferred over linking with a pre-built `wrutil` library.
-
-The library has a fledgling test suite which must be expanded urgently.
-
-Documentation outside of this file is almost nonexistent at the moment; this must be tackled as a top priority.
 
 
 ## Features

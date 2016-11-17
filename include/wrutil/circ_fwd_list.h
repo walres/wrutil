@@ -1139,6 +1139,14 @@ public:
                 }
         }
 
+        void
+        rotate()
+        {
+                if (last_) {
+                        last_ = traits_type::next_node(last_);
+                }
+        }
+
         void unique() { unique(std::equal_to<value_type>()); }
 
         template <typename BinaryPredicate> void
@@ -1710,6 +1718,7 @@ public:
                 { list_.splice_after(pos, other.list_, first, last); }
 
         void reverse() { list_.reverse(); }
+        void rotate() { list_.rotate(); }
         void unique() { list_.unique(); }
 
         template <typename BinaryPredicate> void unique(BinaryPredicate pred)
