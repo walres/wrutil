@@ -93,3 +93,7 @@ endif()
 
 add_definitions("-DBOOST_NO_AUTO_PTR")
         # avoid deprecation warnings for std::auto_ptr, which we don't use
+
+if (CXXFLAGS)
+        add_definitions(${CXXFLAGS})
+endif()
