@@ -409,6 +409,7 @@ public:
     }
 
     constexpr explicit operator bool() const noexcept {return this->__engaged_;}
+    constexpr bool has_value() const noexcept { return operator bool(); }
 
     value_type const& value() const
     {
