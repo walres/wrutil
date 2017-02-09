@@ -72,14 +72,14 @@ using std::experimental::make_optional;
 namespace wr {
 
 
-class bad_optional_access
+class WRUTIL_API bad_optional_access
     : public std::logic_error
 {
 public:
 	bad_optional_access() : std::logic_error("Bad optional Access") {}
 
 //	Get the key function ~bad_optional_access() into the dylib
-        virtual WRUTIL_API ~bad_optional_access() noexcept;
+        virtual ~bad_optional_access() noexcept;
 };
 
 
