@@ -34,16 +34,40 @@
 namespace wr {
 
 
+WRUTIL_API TestManager::TestManager() = default;
+
+//--------------------------------------
+
 WRUTIL_API
 TestManager::TestManager(
         const string_view &group,
         int                argc,
         const char       **argv
 ) :
-        group_    (group),
-        exec_path_(argv[0])
+        TestManager()
 {
+        init(group, argc, argv);
+}
+
+//--------------------------------------
+
+WRUTIL_API void
+TestManager::init(
+        const string_view  &group,
+        int                 argc,
+        const char        **argv
+)
+{
+        group_ = group;
+        exec_path_ = argv[0];
+
         static const Option OPTIONS[] = {
+                { "-A", Option::NON_EMPTY_ARG_REQUIRED,
+                        [this](string_view arg) {
+                                auto split = arg.split('=');
+                                args_[split.first] = split.second;
+                        } },
+
                 { { "-d", "--debug", "--run-directly" },
                         [this]() { run_directly_ = true; } },
 
@@ -85,6 +109,53 @@ TestManager::~TestManager()
                 print(std::cerr, "no such test %s.%s.%u\n",
                       group_, not_run.first, not_run.second);
         }
+}
+
+//--------------------------------------
+
+WRUTIL_API std::string &
+TestManager::operator[](
+        const string_view &arg_name
+)
+{
+        return args_[arg_name.to_string()];
+}
+
+//--------------------------------------
+
+WRUTIL_API optional<string_view>
+TestManager::value(
+        const string_view &arg_name
+) const
+{
+        auto i = args_.find(arg_name.to_string());
+        optional<string_view> result;
+
+        if (i != args_.end()) {
+                result = string_view(i->second);
+        }
+
+        return result;
+}
+
+//--------------------------------------
+
+WRUTIL_API string_view
+TestManager::valueOr(
+        const string_view &arg_name,
+        const string_view &or_value
+) const
+{
+        auto i = args_.find(arg_name.to_string());
+        return i != args_.end() ? string_view(i->second) : or_value;
+}
+
+//--------------------------------------
+
+WRUTIL_API void
+TestManager::clearArgs()
+{
+        args_.clear();
 }
 
 //--------------------------------------

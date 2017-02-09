@@ -28,12 +28,14 @@
 #include <fstream>
 #include <functional>
 #include <iosfwd>
+#include <map>
 #include <set>
 #include <string>
 #include <stdexcept>
 #include <wrutil/Config.h>
 #include <wrutil/filesystem.h>
 #include <wrutil/Format.h>
+#include <wrutil/optional.h>
 #include <wrutil/string_view.h>
 
 
@@ -67,6 +69,8 @@ struct TestFailure :
 class TestManager
 {
 public:
+        WRUTIL_API TestManager();
+
         WRUTIL_API TestManager(const string_view &group, int argc,
                                const char **argv);
 
@@ -74,6 +78,9 @@ public:
                 TestManager(group, argc, (const char **) argv) {}
 
         WRUTIL_API ~TestManager();
+
+        WRUTIL_API void init(const string_view &group, int argc,
+                             const char **argv);
 
         template <typename Fn, typename ...Args> void
         run(
@@ -98,9 +105,22 @@ public:
                 run_(sub_group, test_number, f);
         }
 
-        size_t count() const  { return count_ + to_run_.size(); }
-        size_t passed() const { return passed_; }
-        size_t failed() const { return count() - passed_; }
+        size_t count() const         { return count_ + to_run_.size(); }
+        size_t passed() const        { return passed_; }
+        size_t failed() const        { return count() - passed_; }
+        bool runningAllTests() const { return !run_selected_; }
+
+        WRUTIL_API std::string &operator[](const string_view &arg_name);
+
+        WRUTIL_API optional<string_view>
+                value(const string_view &arg_name) const;
+
+        optional<string_view> operator[](const string_view &arg_name) const
+                { return value(arg_name); }
+
+        WRUTIL_API string_view valueOr(const string_view &arg_name,
+                                       const string_view &or_value) const;
+        WRUTIL_API void clearArgs();
 
 private:
         void setUpChildProcessHandling();  // platform-specific
@@ -120,6 +140,7 @@ private:
 
         using TestSet = std::set<std::pair<string_view, unsigned>>;
         using DumpExceptionFn = void (*)(std::ostream &, const char *);
+        using ArgMap = std::map<std::string, std::string>;
 
         std::string     group_;
         path            exec_path_,
@@ -134,6 +155,7 @@ private:
         unsigned        timeout_ms_ = 5000;
         DumpExceptionFn dump_exception_ = nullptr;
                               // avoid hard-wired dependency on wrdebug library
+        ArgMap          args_;
 };
 
 
