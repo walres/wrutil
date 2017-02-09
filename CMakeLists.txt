@@ -254,6 +254,7 @@ set(WRUTIL_SOURCES
         src/SHA256.cxx
         src/string_view.cxx
         src/string_view_format.cxx
+        src/tagged_ptr_format.cxx
         src/TestManager.cxx
         src/u8string_view.cxx
         src/u8string_view_format.cxx
@@ -290,6 +291,7 @@ set(WRUTIL_HEADERS
         include/wrutil/SHA256.h
         include/wrutil/StdioFilePtr.h
         include/wrutil/string_view.h
+        include/wrutil/tagged_ptr.h
         include/wrutil/TestManager.h
         include/wrutil/u8string_view.h
         include/wrutil/uiostream.h
