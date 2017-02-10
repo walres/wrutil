@@ -71,6 +71,12 @@ TestManager::runChildProcess(
                     + wide_narrow_cvt().from_bytes(sub_group.to_string())
                     + L'.' + std::to_wstring(test_number) + L"\"\0";
 
+        for (auto arg: args_) {
+                cmd_line += L" -A \"" + wide_narrow_cvt().from_bytes(arg.first)
+                            + L'=' + wide_narrow_cvt().from_bytes(arg.second)
+                            + L'"';
+        }
+
         std::wstring desktop_name;
         DWORD        req_length;
         HDESK        desktop_handle = GetThreadDesktop(GetCurrentThreadId());
