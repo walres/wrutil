@@ -35,7 +35,7 @@ namespace wr {
 
 
 template <typename Pointee, size_t N_TAG_BITS>
-class WRUTIL_API tagged_ptr
+class tagged_ptr
 {
 public:
         using this_t = tagged_ptr;
@@ -137,7 +137,7 @@ public:
 
 private:
         static constexpr uintptr_t ptrMask()
-                { return uintptr_t(-1UL) << N_TAG_BITS; }
+                { return uintptr_t(-1L) << N_TAG_BITS; }
 
         static constexpr uintptr_t tagMask() { return ~ptrMask(); }
 
