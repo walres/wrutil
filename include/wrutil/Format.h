@@ -73,7 +73,7 @@ struct Params
 
 //--------------------------------------
 
-template <typename T> struct WRUTIL_API TypeHandler;
+template <typename T> struct TypeHandler;
 
 using FormatFn = bool (*)(const Params &);
 
