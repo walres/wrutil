@@ -109,6 +109,8 @@ public:
         size_t passed() const        { return passed_; }
         size_t failed() const        { return count() - passed_; }
         bool runningAllTests() const { return !run_selected_; }
+        unsigned timeout() const     { return timeout_ms_; }
+        void setTimeout(unsigned ms) { timeout_ms_ = ms; }
 
         WRUTIL_API std::string &operator[](const string_view &arg_name);
 
