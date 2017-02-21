@@ -24,6 +24,10 @@
  * \endparblock
  */
 #include <errno.h>
+#include <time.h>
+#include <locale>
+
+#include <wrutil/arraystream.h>
 #include <wrutil/Format.h>
 #include <wrutil/filesystem.h>
 
@@ -357,6 +361,70 @@ fmt::TypeHandler<directory_entry>::set(
         arg.type = Arg::OTHER_T;
         arg.other = &val.path();
         arg.fmt_fn = &TypeHandler<path>::format;
+}
+
+//--------------------------------------
+
+/// \brief support passing \c file_time_type arguments to \c wr::print()
+WRUTIL_API void
+fmt::TypeHandler<file_time_type>::set(
+        Arg            &arg,
+        file_time_type  t
+)
+{
+        arg.i = file_time_type::clock::to_time_t(t);
+        arg.type = Arg::INT_T;
+}
+
+//--------------------------------------
+
+/// \brief allow \c file_time_type values to be formatted as strings or numbers
+WRUTIL_API bool
+fmt::TypeHandler<file_time_type>::format(
+        const Params &parms
+)
+{
+        Arg  arg2;
+        char buf[48];
+
+        switch (parms.conv) {
+        case 's':
+                {
+                        oarraystream out(buf, sizeof(buf));
+                        out.imbue(parms.target.locale());
+                        auto time = static_cast<std::time_t>(parms.arg->i);
+                        struct tm time_bits;
+#if WR_WINAPI
+                        localtime_s(&time_bits, &time);
+#else
+                        localtime_r(&time, &time_bits);
+#endif
+                        const auto &tp =
+                              std::use_facet<std::time_put<char>>(out.getloc());
+
+                        std::ostreambuf_iterator<char> end(out.rdbuf());
+
+                        end = tp.put(end, out, ' ', &time_bits, 'F');
+                        *end = ' ';
+                        end = tp.put(end, out, ' ', &time_bits, 'T');
+
+                        if (end.failed()) {
+                                return false;
+                        }
+
+                        arg2.type = Arg::STR_T;
+                        arg2.s.data = buf;
+                        arg2.s.length = out.tellp();
+                }
+                break;
+        default:
+                // format using default semantics for numbers
+                arg2 = *parms.arg;
+                arg2.fmt_fn = nullptr;
+                break;
+        }
+
+        return parms.target.format(parms, &arg2);
 }
 
 

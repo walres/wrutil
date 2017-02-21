@@ -58,6 +58,7 @@ using fs_impl::is_block_file;
 using fs_impl::is_character_file;
 using fs_impl::is_fifo;
 using fs_impl::is_socket;
+using fs_impl::last_write_time;
 
 
 } // namespace wr
@@ -66,6 +67,7 @@ using fs_impl::is_socket;
 #else // WR_HAVE_STD_FILESYSTEM
 
 #include <algorithm>
+#include <chrono>
 #include <locale>
 #include <system_error>
 #include <type_traits>
@@ -78,7 +80,7 @@ namespace wr {
 
 namespace fs_impl = boost::filesystem;
 
-using file_time_type = std::time_t;
+using file_time_type = std::chrono::system_clock::time_point;
 using fs_error_code = boost::system::error_code;
 
 //--------------------------------------
@@ -209,6 +211,24 @@ inline bool is_socket(const fs_impl::path &p)
 inline bool is_socket(const fs_impl::path &p, fs_error_code &ec) noexcept
         { return is_socket(status(p, ec)); }
 
+inline file_time_type last_write_time(const fs_impl::path &p)
+        { return file_time_type::clock::from_time_t(
+                                        fs_impl::last_write_time(p)); }
+
+inline file_time_type last_write_time(const fs_impl::path &p,
+                                      fs_error_code &ec) noexcept
+        { return file_time_type::clock::from_time_t(
+                                        fs_impl::last_write_time(p, ec)); }
+
+inline void last_write_time(const fs_impl::path &p, file_time_type new_time)
+        { fs_impl::last_write_time(p,
+                file_time_type::clock::to_time_t(new_time)); }
+
+inline void last_write_time(const fs_impl::path &p, file_time_type new_time,
+                            fs_error_code &ec) noexcept
+        { fs_impl::last_write_time(p,
+                file_time_type::clock::to_time_t(new_time), ec); }
+
 
 } // namespace wr
 
@@ -260,7 +280,6 @@ using fs_impl::is_empty;
 using fs_impl::is_other;
 using fs_impl::is_regular_file;
 using fs_impl::is_symlink;
-using fs_impl::last_write_time;
 using fs_impl::permissions;
 using fs_impl::read_symlink;
 using fs_impl::remove;
@@ -448,6 +467,14 @@ template <> struct WRUTIL_API TypeHandler<file_status>
 template <> struct WRUTIL_API TypeHandler<directory_entry>
 {
         static void set(Arg &arg, const directory_entry &val);
+};
+
+//--------------------------------------
+
+template <> struct WRUTIL_API TypeHandler<file_time_type>
+{
+        static void set(Arg &arg, file_time_type t);
+        static bool format(const Params &parms);
 };
 
 
