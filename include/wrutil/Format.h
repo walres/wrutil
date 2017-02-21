@@ -74,6 +74,10 @@ struct Params
 //--------------------------------------
 
 template <typename T> struct TypeHandler;
+//{
+//        static void set(Arg &arg, const T &val);
+//        static bool format(const Params &parms);
+//};
 
 using FormatFn = bool (*)(const Params &);
 
