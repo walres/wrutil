@@ -29,26 +29,22 @@ TaggedPtrHandlerBase::format(
         const Params &parms
 ) // static
 {
-        Arg arg2;
+        Arg  arg2;
+        char buf[48];
 
         switch (parms.conv) {
         case 's':
-                {
-                        char buf[48];
-                        arg2.type = Arg::STR_T;
-                        arg2.s.data = buf;
-                        if (parms.arg->other) {
-                                arg2.s.length = numeric_cast<size_t>(
-                                        wr::print(buf, sizeof(buf),
-                                                  "{0x%x, %u}",
-                                                  parms.arg->other,
-                                                  parms.arg->s.length));
-                        } else {
-                                arg2.s.length = numeric_cast<size_t>(
-                                        wr::print(buf, sizeof(buf),
-                                                  "{nullptr, %u}",
-                                                  parms.arg->s.length));
-                        }
+                arg2.type = Arg::STR_T;
+                arg2.s.data = buf;
+                if (parms.arg->other) {
+                        arg2.s.length = numeric_cast<size_t>(
+                                wr::print(buf, sizeof(buf), "{0x%x, %u}",
+                                          parms.arg->other,
+                                          parms.arg->s.length));
+                } else {
+                        arg2.s.length = numeric_cast<size_t>(
+                                wr::print(buf, sizeof(buf), "{nullptr, %u}",
+                                          parms.arg->s.length));
                 }
                 break;
         default:
