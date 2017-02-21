@@ -234,6 +234,12 @@ check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_HAS_TRIVIAL_DESTRUCTOR)
 set(CHECK_CXX_CODE "#include <type_traits>\nint main() { struct Foo {}\; bool b = std::is_nothrow_destructible<Foo>::value\; (void) b\; return 0\; }\n")
 check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_IS_NOTHROW_DESTRUCTIBLE)
 
+#
+# Check for std::is_trivially_copyable
+#
+set(CHECK_CXX_CODE "#include <type_traits>\nint main() { struct Foo {}\; bool b = std::is_trivially_copyable<Foo>::value\; (void) b\; return 0\; }\n")
+check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_IS_TRIVIALLY_COPYABLE)
+
 ########################################
 #
 # Target Definitions
