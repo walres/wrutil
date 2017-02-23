@@ -79,7 +79,7 @@ public:
         setbuf(
                 char_type       *begin,
                 std::streamsize  size
-        )
+        ) override
         {
                 base_type::setg(begin, begin, begin + size);
                 base_type::setp(begin, begin + size);
