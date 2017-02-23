@@ -35,11 +35,13 @@ endif()
 #
 # C++ Compiler Configuration
 #
-include(cmake/compiler-config.cmake)
 
+# perform these two steps before setting C++ standard flag as they are compiled
+# as C, which causes an error with Clang 3.9 when -std=c++** is given
 math(EXPR WR_WORDSIZE "${CMAKE_SIZEOF_VOID_P} * 8")
-
 check_type_size(wchar_t WR_SIZEOF_WCHAR_T)
+
+include(cmake/compiler-config.cmake)
 
 ########################################
 #
