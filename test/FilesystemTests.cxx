@@ -72,5 +72,21 @@ main(
                 }
         });
 
+        tester.run("path_has_prefix", 1, [] {
+                wr::path p1("one/two/three"), p2("one/two");
+                if (!wr::path_has_prefix(p1, p2)) {
+                        throw TestFailure("path_has_prefix(\"%s\", \"%s\") returned false, expected true",
+                                          p1, p2);
+                }
+        });
+
+        tester.run("path_has_prefix", 2, [] {
+                wr::path p1("one/two"), p2("one/two/three");
+                if (wr::path_has_prefix(p1, p2)) {
+                        throw TestFailure("path_has_prefix(\"%s\", \"%s\") returned true, expected false",
+                                          p1, p2);
+                }
+        });
+
         return tester.failed() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

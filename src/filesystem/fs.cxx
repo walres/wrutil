@@ -34,7 +34,7 @@ const path DOT("."), DOTDOT("..");
 //--------------------------------------
 
 WRUTIL_API bool
-has_prefix_path(
+path_has_prefix(
         const path &p,
         const path &prefix
 )
@@ -50,7 +50,7 @@ has_prefix_path(
                 }
         }
 
-        return true;
+        return (i_prefix == end_prefix);
 }
 
 //--------------------------------------

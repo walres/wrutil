@@ -294,7 +294,7 @@ using fs_impl::system_complete;
 using fs_impl::temp_directory_path;
 
 
-WRUTIL_API bool has_prefix_path(const path &p, const path &prefix);
+WRUTIL_API bool path_has_prefix(const path &p, const path &prefix);
 WRUTIL_API bool is_separator(path::value_type c);
 
 
