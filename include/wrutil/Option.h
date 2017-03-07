@@ -121,6 +121,10 @@ public:
                 WRUTIL_API Action(const Action &) = default;
                 WRUTIL_API Action(Action &&) = default;
 
+                Action(Action &other) :
+                        Action(static_cast<const Action &>(other)) {}
+                                // avoid infinite recursion with template version
+
                 template <typename Fn> Action(Fn &&f)
                         { make(std::forward<Fn>(f)); }
 
@@ -130,6 +134,10 @@ public:
 
                 WRUTIL_API Action &operator=(const Action &) = default;
                 WRUTIL_API Action &operator=(Action &&) = default;
+
+                Action &operator=(Action &other)
+                        { return *this = static_cast<const Action &>(other); }
+                                // avoid infinite recursion with template version
 
                 template <typename Fn> Action &operator=(Fn &&f)
                         { make(std::forward<Fn>(f)); return *this; }
