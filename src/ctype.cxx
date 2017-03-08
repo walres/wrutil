@@ -38,9 +38,11 @@ lookup_alt_case(
         char32_t             c
 )
 {
-        auto i_page = page_index[c >> 8];
-        if (i_page >= 0) {
-                c = pages[i_page][c & 0xff];
+        if (c < ucd::CODE_SPACE_SIZE) {
+                auto i_page = page_index[c >> 8];
+                if (i_page >= 0) {
+                        c = pages[i_page][c & 0xff];
+                }
         }
         return c;
 }
