@@ -78,7 +78,7 @@ isugraph(
 )
 {
 #if WR_HAVE_STD_CTYPE_BLANK
-        if (ucd::print_bits && ucd::blank_bits) {
+        if (ucd::print_bits & ucd::blank_bits) {
                 return (ucd::class_(c) & (std::ctype_base::print
                                           | std::ctype_base::blank))
                         == std::ctype_base::print;
@@ -317,7 +317,7 @@ template <> WRUTIL_API const ctype<char32_t> &
 template <> inline bool isspace(char32_t c, const locale &/* loc */)
         { return wr::isuspace(c); }
 
-#if WR_HAVE_STD_CTYPE_BLANK
+#if WR_HAVE_STD_ISBLANK_TEMPLATE
 template <> inline bool isblank(char32_t c, const locale &/* loc */)
         { return wr::isublank(c); }
 #endif

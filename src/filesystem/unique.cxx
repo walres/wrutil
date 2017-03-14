@@ -87,7 +87,7 @@ unique_path(
         hasher.append(&some_addr, sizeof(some_addr));
 
         // mix in a code address (take advantage of any address randomization)
-        some_addr = reinterpret_cast<void *>(&has_prefix_path);
+        some_addr = reinterpret_cast<void *>(&path_has_prefix);
         hasher.append(&some_addr, sizeof(some_addr));
 
         // mix in address of hash_str's data (probably heap)

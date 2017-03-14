@@ -90,16 +90,16 @@ if (WR_HAVE_STD_FILESYSTEM)
         set(FILESYSTEM_HEADER <filesystem>)
         set(FILESYSTEM_NS std::filesystem)
 else()
-        set(CHECK_CXX_CODE "#include <experimental/filesystem>\nint main(int, char **argv) { std::experimental::filesystem::path p(argv[0])\; (void) p\; return 0\; }\n")
+        set(CHECK_CXX_CODE "#include <experimental/filesystem>\nint main(int, char **argv) { std::experimental::filesystem::path p\; p = std::experimental::filesystem::current_path()\; return 0\; }\n")
 
         unset(CMAKE_REQUIRED_LIBRARIES)
-        check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_EXP_FILESYSTEM)
+        check_cxx_source_runs(${CHECK_CXX_CODE} WR_HAVE_STD_EXP_FILESYSTEM)
 
         if (NOT WR_HAVE_STD_EXP_FILESYSTEM)
                 unset(WR_HAVE_STD_EXP_FILESYSTEM)
                 set(CMAKE_REQUIRED_LIBRARIES stdc++fs)
-                check_cxx_source_compiles(${CHECK_CXX_CODE}
-                                          WR_HAVE_STD_EXP_FILESYSTEM_LIBSTDCXX)
+                check_cxx_source_runs(${CHECK_CXX_CODE}
+                                      WR_HAVE_STD_EXP_FILESYSTEM_LIBSTDCXX)
                 if (WR_HAVE_STD_EXP_FILESYSTEM_LIBSTDCXX)
                         set(WR_HAVE_STD_EXP_FILESYSTEM 1)
                         list(INSERT WRUTIL_SYS_LIBS 0 stdc++fs)
@@ -109,8 +109,8 @@ else()
         if (NOT WR_HAVE_STD_EXP_FILESYSTEM)
                 unset(WR_HAVE_STD_EXP_FILESYSTEM)
                 set(CMAKE_REQUIRED_LIBRARIES c++experimental)
-                check_cxx_source_compiles(${CHECK_CXX_CODE}
-                                          WR_HAVE_STD_EXP_FILESYSTEM_LIBCXX)
+                check_cxx_source_runs(${CHECK_CXX_CODE}
+                                      WR_HAVE_STD_EXP_FILESYSTEM_LIBCXX)
                 if (WR_HAVE_STD_EXP_FILESYSTEM_LIBCXX)
                         set(WR_HAVE_STD_EXP_FILESYSTEM 1)
                         list(INSERT WRUTIL_SYS_LIBS 0 c++experimental)
@@ -203,11 +203,11 @@ endif()
 #
 # Check for availability of std::optional in C++ standard library (optional)
 #
-set(CHECK_CXX_CODE "#include <optional>\nint main() { std::optional<int> o(1234)\; (void) o\; return 0\; }\n")
+set(CHECK_CXX_CODE "#include <optional>\nint main() { std::optional<int> o(1234)\; if (o.has_value()) o.reset()\; return 0\; }\n")
 check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_OPTIONAL)
 
 if (NOT WR_HAVE_STD_OPTIONAL)
-        set(CHECK_CXX_CODE "#include <experimental/optional>\nint main() { std::experimental::optional<int> o(1234)\; (void) o\; return 0\; }\n")
+        set(CHECK_CXX_CODE "#include <experimental/optional>\nint main() { std::experimental::optional<int> o(1234)\; if (o.has_value()) o.reset()\; return 0\; }\n")
         check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_EXP_OPTIONAL)
         if (WR_HAVE_STD_EXP_OPTIONAL)
                 set(WR_HAVE_STD_OPTIONAL 1)
@@ -220,6 +220,13 @@ endif()
 #
 set(CHECK_CXX_CODE "#include <locale>\nint main() { auto m = std::ctype_base::blank\; (void) m\; return 0\; }\n")
 check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_CTYPE_BLANK)
+
+#
+# Check for presence of std::isblank template (may not be present even if
+# std::ctype_base::blank exists)
+#
+set(CHECK_CXX_CODE "#include <locale>\nint main() { std::locale loc\; auto y = std::isblank(' ', loc)\; return y ? 0 : 1\; }\n")
+check_cxx_source_compiles(${CHECK_CXX_CODE} WR_HAVE_STD_ISBLANK_TEMPLATE)
 
 #
 # Check for std::is_trivially_destructible (otherwise fall back to

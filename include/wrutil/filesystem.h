@@ -372,13 +372,13 @@ WRUTIL_API std::string to_generic_u8string(const path &p);
 #if WR_HAVE_FSIMPL_U8PATH
 using fs_impl::u8path;
 
-#if !WR_DINKUM
+#if !WR_DINKUM && !WR_LIBCXX
 template <>
 #endif
 inline path u8path(const wr::u8string_view &s)
         { return u8path(s.char_data(), s.char_data() + s.bytes()); }
 
-#if !WR_DINKUM
+#if !WR_DINKUM && !WR_LIBCXX
 template <>
 #endif
 inline path u8path(const wr::string_view &s)
