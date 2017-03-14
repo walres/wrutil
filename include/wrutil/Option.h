@@ -42,7 +42,7 @@
 namespace wr {
 
 
-class Option
+class WRUTIL_API Option
 {
 public:
         struct Error;
@@ -114,12 +114,12 @@ public:
          *        indicated number of characters and continue parsing if
          *        further characters exist
          */
-        class Action
+        class WRUTIL_API Action
         {
         public:
-                WRUTIL_API Action() = default;
-                WRUTIL_API Action(const Action &) = default;
-                WRUTIL_API Action(Action &&) = default;
+                Action() = default;
+                Action(const Action &) = default;
+                Action(Action &&) = default;
 
                 Action(Action &other) :
                         Action(static_cast<const Action &>(other)) {}
@@ -128,12 +128,12 @@ public:
                 template <typename Fn> Action(Fn &&f)
                         { make(std::forward<Fn>(f)); }
 
-                WRUTIL_API ~Action() = default;
+                ~Action() = default;
 
                 void reset() { action_ = {}; }
 
-                WRUTIL_API Action &operator=(const Action &) = default;
-                WRUTIL_API Action &operator=(Action &&) = default;
+                Action &operator=(const Action &) = default;
+                Action &operator=(Action &&) = default;
 
                 Action &operator=(Action &other)
                         { return *this = static_cast<const Action &>(other); }
@@ -145,9 +145,8 @@ public:
                 explicit operator bool() const
                         { return static_cast<bool>(action_); }
 
-                WRUTIL_API int operator()(string_view opt, string_view arg,
-                                          int argc,
-                                          const char * const *argv) const;
+                int operator()(string_view opt, string_view arg,
+                               int argc, const char * const *argv) const;
 
         private:
                 template <typename T> using enable_if_void
@@ -323,7 +322,7 @@ public:
         /**
          * \brief Package of one or more option names
          */
-        class Names
+        class WRUTIL_API Names
         {
         public:
                 Names() = default;
@@ -350,7 +349,7 @@ public:
                 Names &operator=(const Names &other)
                         { return copy(other.names_, other.size_); }
 
-                WRUTIL_API Names &operator=(Names &&other);
+                Names &operator=(Names &&other);
 
                 const std::string &operator[](size_t i) const
                         { return names_[i]; }
@@ -361,8 +360,7 @@ public:
                 const std::string *end() const   { return names_ + size_; }
 
         private:
-                template <typename T> WRUTIL_API Names &copy(const T *names,
-                                                             size_t count);
+                template <typename T> Names &copy(const T *names, size_t count);
 
                 const std::string *names_ = nullptr;
                 size_t             size_  = 0;
@@ -376,7 +374,7 @@ public:
          * objects from different kinds of source which may be a constant
          * array, an initializer list or a dynamic array with explicit size.
          */
-        class Table
+        class WRUTIL_API Table
         {
         public:
                 /// construct from static array of Option objects
@@ -411,13 +409,13 @@ public:
                 SUB_OPT_SELF_PARSE_ARG = (1U << 5)
         };
 
-        static WRUTIL_API const char * const UNKNOWN;
+        static const char * const UNKNOWN;
 
         Option() = default;
         Option(const Option &) = default;
         Option(Option &&) = default;
 
-        WRUTIL_API Option(Names names, Flags flags, Action action);
+        Option(Names names, Flags flags, Action action);
         Option(Names names, Action action) :
                 Option(std::move(names), 0, std::move(action)) {}
         Option(Names names) : Option(std::move(names), 0, {}) {}
@@ -442,25 +440,23 @@ public:
                 ARGV_TO_UTF8 = 1
         };
 
-        static WRUTIL_API int parse(const Table &options, int argc,
-                                    const char **argv, int pos,
-                                    unsigned int flags = 0);
+        static int parse(const Table &options, int argc, const char **argv,
+                         int pos, unsigned int flags = 0);
 
         static int parse(const Table &options, int argc, char **argv, int pos,
                          unsigned int flags = 0)
                 { return parse(options,
                                argc, (const char **) argv, pos, flags); }
 
-        static WRUTIL_API size_t parseSubOptions(const Table &sub_options,
-                                                 string_view opt_name,
-                                                 string_view opt_arg,
-                                                 size_t pos = 0);
+        static size_t parseSubOptions(const Table &sub_options,
+                                      string_view opt_name, string_view opt_arg,
+                                      size_t pos = 0);
 
-        static WRUTIL_API string_view prefix(string_view opt_name);
+        static string_view prefix(string_view opt_name);
 
-        static WRUTIL_API ArgVStorage toArgVector(const string_view &command);
+        static ArgVStorage toArgVector(const string_view &command);
 
-        static WRUTIL_API ArgVStorage localToUTF8(int argc, const char **argv);
+        static ArgVStorage localToUTF8(int argc, const char **argv);
 
         static ArgVStorage localToUTF8(int argc, char **argv)
                 { return localToUTF8(argc, (const char **) argv); }
@@ -485,7 +481,7 @@ private:
 
 //--------------------------------------
 
-struct Option::Error :
+struct WRUTIL_API Option::Error :
         public std::runtime_error
 {
         template <typename ...Args> Error(const char *fmt, Args &&...args) :
@@ -495,14 +491,13 @@ struct Option::Error :
 
 //--------------------------------------
 
-class Option::UnknownOption :
+class WRUTIL_API Option::UnknownOption :
         public Option::Error
 {
 public:
-        WRUTIL_API UnknownOption();
-        WRUTIL_API UnknownOption(string_view opt_name);
-        WRUTIL_API UnknownOption(string_view opt_name,
-                                 string_view sub_opt_name);
+        UnknownOption();
+        UnknownOption(string_view opt_name);
+        UnknownOption(string_view opt_name, string_view sub_opt_name);
 
         string_view optionName() const { return opt_name_; }
         string_view subOptionName() const { return sub_opt_name_; }
@@ -513,14 +508,13 @@ private:
 
 //--------------------------------------
 
-class Option::MissingArgument :
+class WRUTIL_API Option::MissingArgument :
         public Option::Error
 {
 public:
-        WRUTIL_API MissingArgument();
-        WRUTIL_API MissingArgument(string_view opt_name);
-        WRUTIL_API MissingArgument(string_view opt_name,
-                                   string_view sub_opt_name);
+        MissingArgument();
+        MissingArgument(string_view opt_name);
+        MissingArgument(string_view opt_name, string_view sub_opt_name);
 
         string_view optionName() const { return opt_name_; }
         string_view subOptionName() const { return sub_opt_name_; }
@@ -531,16 +525,16 @@ private:
 
 //--------------------------------------
 
-class Option::InvalidArgument :
+class WRUTIL_API Option::InvalidArgument :
         public Option::Error
 {
 public:
-        WRUTIL_API InvalidArgument(string_view reason);
-        WRUTIL_API InvalidArgument(string_view opt_name, string_view arg,
-                                   string_view reason);
-        WRUTIL_API InvalidArgument(string_view opt_name,
-                                   string_view sub_opt_name,
-                                   string_view arg, string_view reason);
+        InvalidArgument(string_view reason);
+        InvalidArgument(string_view opt_name, string_view arg,
+                        string_view reason);
+
+        InvalidArgument(string_view opt_name, string_view sub_opt_name,
+                        string_view arg, string_view reason);
 
         string_view optionName() const { return opt_name_; }
         string_view subOptionName() const { return sub_opt_name_; }
