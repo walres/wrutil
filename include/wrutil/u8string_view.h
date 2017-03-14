@@ -105,7 +105,7 @@ private:
 
 //--------------------------------------
 
-class u8string_view
+class WRUTIL_API u8string_view
 {
 public:
         using this_t = u8string_view;
@@ -126,8 +126,8 @@ public:
 
         u8string_view() : begin_(nullptr), end_(nullptr) {}
         u8string_view(const this_t &other) = default;
-        WRUTIL_API u8string_view(const char *s);
-        WRUTIL_API u8string_view(const char *s, size_type bytes);
+        u8string_view(const char *s);
+        u8string_view(const char *s, size_type bytes);
         u8string_view(const uint8_t *s) :
                 u8string_view(reinterpret_cast<const char *>(s)) {}
         u8string_view(const uint8_t *s, size_type bytes) :
@@ -159,26 +159,26 @@ public:
         const_reverse_iterator crend() const   { return rend(); }
 
         reference front() const    { return begin_; }
-        WRUTIL_API reference back() const;
+        reference back() const;
         const_pointer data() const { return begin_; }
         size_type bytes() const    { return end_ - begin_; }
-        WRUTIL_API size_type size() const;
+        size_type size() const;
         size_type length() const   { return size(); }
         size_type max_size() const { return size_type(0) - 2; }
         bool empty() const         { return end_ <= begin_; }
 
-        WRUTIL_API bool has_min_size(size_type s) const;
-        WRUTIL_API bool has_max_size(size_type s) const;
+        bool has_min_size(size_type s) const;
+        bool has_max_size(size_type s) const;
 
         const char *char_data() const
                 { return reinterpret_cast<const char *>(begin_); }
 
-        WRUTIL_API this_t &remove_prefix(size_type n_code_points);
-        WRUTIL_API this_t &remove_suffix(size_type n_code_points);
+        this_t &remove_prefix(size_type n_code_points);
+        this_t &remove_suffix(size_type n_code_points);
 
-        WRUTIL_API this_t &trim_left();
-        WRUTIL_API this_t &trim_right();
-        WRUTIL_API this_t &trim();
+        this_t &trim_left();
+        this_t &trim_right();
+        this_t &trim();
 
         this_t &
         swap(
@@ -242,146 +242,128 @@ public:
 
         this_t &operator=(const this_t &other) = default;
 
-        WRUTIL_API this_t substr(const_iterator pos,
-                                 size_type n_code_points = npos) const;
-
+        this_t substr(const_iterator pos, size_type n_code_points = npos) const;
         this_t substr(const_iterator pos, const_iterator end_pos) const
                 { return u8string_view(pos, end_pos); }
 
-        WRUTIL_API std::pair<this_t, this_t> split(char32_t sep) const;
-        WRUTIL_API std::pair<this_t, this_t> split(const this_t &sep) const;
+        std::pair<this_t, this_t> split(char32_t sep) const;
+        std::pair<this_t, this_t> split(const this_t &sep) const;
 
-        WRUTIL_API std::pair<this_t, this_t> rsplit(char32_t sep) const;
-        WRUTIL_API std::pair<this_t, this_t> rsplit(const this_t &sep) const;
+        std::pair<this_t, this_t> rsplit(char32_t sep) const;
+        std::pair<this_t, this_t> rsplit(const this_t &sep) const;
 
         static int compare(char32_t c1, char32_t c2)
                 { return static_cast<int>(c1) - static_cast<int>(c2); }
 
-        WRUTIL_API int compare(const this_t &s2) const;
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const this_t &s2) const;
+        int compare(const this_t &s2) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const this_t &s2) const;
 
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const this_t &s2, const_iterator pos2,
-                               size_type n_code_points2 = npos) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const this_t &s2, const_iterator pos2,
+                    size_type n_code_points2 = npos) const;
 
-        WRUTIL_API int compare(const char *s2) const;
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const char *s2) const;
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const char *s2, size_type n_bytes2) const;
-        WRUTIL_API int compare(const char32_t *s2) const;
-        WRUTIL_API int compare(const char32_t *s2,
-                               size_type num_code_points2) const;
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const char32_t *s2) const;
-        WRUTIL_API int compare(const_iterator pos1, size_type n_code_points1,
-                               const char32_t *s2,
-                               size_type n_code_points2) const;
+        int compare(const char *s2) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const char *s2) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const char *s2, size_type n_bytes2) const;
+        int compare(const char32_t *s2) const;
+        int compare(const char32_t *s2, size_type num_code_points2) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const char32_t *s2) const;
+        int compare(const_iterator pos1, size_type n_code_points1,
+                    const char32_t *s2, size_type n_code_points2) const;
 
-        WRUTIL_API bool has_prefix(const this_t &s2) const;
-        WRUTIL_API bool has_suffix(const this_t &s2) const;
+        bool has_prefix(const this_t &s2) const;
+        bool has_suffix(const this_t &s2) const;
 
-        static WRUTIL_API int compare_nocase(char32_t c1, char32_t c2);
+        static int compare_nocase(char32_t c1, char32_t c2);
 
-        WRUTIL_API int compare_nocase(const this_t &s2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1,
-                                      const this_t &s2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1,
-                                      const this_t &s2, const_iterator pos2,
-                                      size_type n_code_points2 = npos) const;
-        WRUTIL_API int compare_nocase(const char *s2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1,
-                                      const char *s2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1, const char *s2,
-                                      size_type n_bytes2) const;
-        WRUTIL_API int compare_nocase(const char32_t *s2) const;
-        WRUTIL_API int compare_nocase(const char32_t *s2,
-                                      size_type num_code_points2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1,
-                                      const char32_t *s2) const;
-        WRUTIL_API int compare_nocase(const_iterator pos1,
-                                      size_type n_code_points1,
-                                      const char32_t *s2,
-                                      size_type n_code_points2) const;
+        int compare_nocase(const this_t &s2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const this_t &s2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const this_t &s2, const_iterator pos2,
+                           size_type n_code_points2 = npos) const;
+        int compare_nocase(const char *s2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const char *s2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const char *s2, size_type n_bytes2) const;
+        int compare_nocase(const char32_t *s2) const;
+        int compare_nocase(const char32_t *s2,
+                           size_type num_code_points2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const char32_t *s2) const;
+        int compare_nocase(const_iterator pos1, size_type n_code_points1,
+                           const char32_t *s2, size_type n_code_points2) const;
 
-        WRUTIL_API bool has_prefix_nocase(const this_t &s2) const;
-        WRUTIL_API bool has_suffix_nocase(const this_t &s2) const;
+        bool has_prefix_nocase(const this_t &s2) const;
+        bool has_suffix_nocase(const this_t &s2) const;
 
-        WRUTIL_API const_iterator find(const this_t &substr,
-                                       const_iterator pos = {}) const;
-        WRUTIL_API const_iterator find(char32_t c,
-                                       const_iterator pos = {}) const;
-        WRUTIL_API const_iterator find(const char *substr, const_iterator pos,
-                                       size_type n_substr_bytes) const;
-        WRUTIL_API const_iterator find(const char *substr,
-                                       const_iterator pos = {}) const;
+        const_iterator find(const this_t &substr,
+                            const_iterator pos = {}) const;
+        const_iterator find(char32_t c, const_iterator pos = {}) const;
+        const_iterator find(const char *substr, const_iterator pos,
+                            size_type n_substr_bytes) const;
+        const_iterator find(const char *substr, const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator rfind(const this_t &substr,
-                                        const_iterator pos = {}) const;
-        WRUTIL_API const_iterator rfind(char32_t c,
-                                        const_iterator pos = {}) const;
-        WRUTIL_API const_iterator rfind(const char *substr, const_iterator pos,
-                                        size_type n_substr_bytes) const;
-        WRUTIL_API const_iterator rfind(const char *substr,
-                                        const_iterator pos = {}) const;
+        const_iterator rfind(const this_t &substr,
+                             const_iterator pos = {}) const;
+        const_iterator rfind(char32_t c, const_iterator pos = {}) const;
+        const_iterator rfind(const char *substr, const_iterator pos,
+                             size_type n_substr_bytes) const;
+        const_iterator rfind(const char *substr, const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_first_of(const this_t &chars,
-                                                const_iterator pos = {}) const;
+        const_iterator find_first_of(const this_t &chars,
+                                     const_iterator pos = {}) const;
 
         const_iterator find_first_of(char32_t c, const_iterator pos = {}) const
                 { return find(c, pos); }
 
-        WRUTIL_API const_iterator find_first_of(const char *u8chars,
-                                               const_iterator pos,
-                                               size_type n_u8chars_bytes) const;
+        const_iterator find_first_of(const char *u8chars, const_iterator pos,
+                                     size_type n_u8chars_bytes) const;
 
-        WRUTIL_API const_iterator find_first_of(const char *u8chars,
-                                                const_iterator pos = {}) const;
+        const_iterator find_first_of(const char *u8chars,
+                                     const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_last_of(const this_t &chars,
+        const_iterator find_last_of(const this_t &chars,
                                     const_iterator pos = {}) const;
 
         const_iterator find_last_of(char32_t c, const_iterator pos = {}) const
                 { return rfind(c, pos); }
 
-        WRUTIL_API const_iterator find_last_of(const char *u8chars,
-                                               const_iterator pos,
-                                               size_type n_u8chars_bytes) const;
+        const_iterator find_last_of(const char *u8chars, const_iterator pos,
+                                    size_type n_u8chars_bytes) const;
 
-        WRUTIL_API const_iterator find_last_of(const char *u8chars,
-                                               const_iterator pos = {}) const;
+        const_iterator find_last_of(const char *u8chars,
+                                    const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_first_not_of(const this_t &chars,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_first_not_of(const this_t &chars,
+                                         const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_first_not_of(char32_t c,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_first_not_of(char32_t c,
+                                         const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_first_not_of(const char *u8chars,
-                                               const_iterator pos,
-                                               size_type n_u8chars_bytes) const;
+        const_iterator find_first_not_of(const char *u8chars,
+                                         const_iterator pos,
+                                         size_type n_u8chars_bytes) const;
 
-        WRUTIL_API const_iterator find_first_not_of(const char *u8chars,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_first_not_of(const char *u8chars,
+                                         const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_last_not_of(const this_t &chars,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_last_not_of(const this_t &chars,
+                                        const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_last_not_of(char32_t c,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_last_not_of(char32_t c,
+                                        const_iterator pos = {}) const;
 
-        WRUTIL_API const_iterator find_last_not_of(const char *u8chars,
-                                               const_iterator pos,
-                                               size_type n_u8chars_bytes) const;
+        const_iterator find_last_not_of(const char *u8chars, const_iterator pos,
+                                        size_type n_u8chars_bytes) const;
 
-        WRUTIL_API const_iterator find_last_not_of(const char *u8chars,
-                                                 const_iterator pos = {}) const;
+        const_iterator find_last_not_of(const char *u8chars,
+                                        const_iterator pos = {}) const;
 
 private:
         void ensure_is_safe();
@@ -545,9 +527,9 @@ namespace fmt {
 struct Arg;
 template <typename> struct TypeHandler;
 
-template <> struct TypeHandler<u8string_view>
+template <> struct WRUTIL_API TypeHandler<u8string_view>
 {
-        static WRUTIL_API void set(Arg &arg, const u8string_view &val);
+        static void set(Arg &arg, const u8string_view &val);
 };
 
 

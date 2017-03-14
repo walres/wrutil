@@ -53,7 +53,7 @@ template <typename T> constexpr int arraySizeInt(T &&array)
 
 //--------------------------------------
 
-struct TestFailure :
+struct WRUTIL_API TestFailure :
         std::runtime_error
 {
         TestFailure() : std::runtime_error("") {}
@@ -66,21 +66,19 @@ struct TestFailure :
 
 //--------------------------------------
 
-class TestManager
+class WRUTIL_API TestManager
 {
 public:
-        WRUTIL_API TestManager();
+        TestManager();
 
-        WRUTIL_API TestManager(const string_view &group, int argc,
-                               const char **argv);
+        TestManager(const string_view &group, int argc, const char **argv);
 
         TestManager(const string_view &group, int argc, char **argv) :
                 TestManager(group, argc, (const char **) argv) {}
 
-        WRUTIL_API ~TestManager();
+        ~TestManager();
 
-        WRUTIL_API void init(const string_view &group, int argc,
-                             const char **argv);
+        void init(const string_view &group, int argc, const char **argv);
 
         template <typename Fn, typename ...Args> void
         run(
@@ -112,24 +110,23 @@ public:
         unsigned timeout() const     { return timeout_ms_; }
         void setTimeout(unsigned ms) { timeout_ms_ = ms; }
 
-        WRUTIL_API std::string &operator[](const string_view &arg_name);
+        std::string &operator[](const string_view &arg_name);
 
-        WRUTIL_API optional<string_view>
-                value(const string_view &arg_name) const;
+        optional<string_view> value(const string_view &arg_name) const;
 
         optional<string_view> operator[](const string_view &arg_name) const
                 { return value(arg_name); }
 
-        WRUTIL_API string_view valueOr(const string_view &arg_name,
-                                       const string_view &or_value) const;
-        WRUTIL_API void clearArgs();
+        string_view valueOr(const string_view &arg_name,
+                            const string_view &or_value) const;
+        void clearArgs();
 
 private:
         void setUpChildProcessHandling();  // platform-specific
         void openLog();
 
-        WRUTIL_API void run_(const string_view &sub_group, unsigned test_number,
-                             const std::function<void()> &test_code);
+        void run_(const string_view &sub_group, unsigned test_number,
+                  const std::function<void()> &test_code);
 
         void runChildProcess(const string_view &sub_group, unsigned test_number,
                              const std::function<void()> &test_code);

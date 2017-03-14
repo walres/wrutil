@@ -83,7 +83,7 @@ using FormatFn = bool (*)(const Params &);
 
 //--------------------------------------
 
-struct Arg
+struct WRUTIL_API Arg
 {
         enum Type
         {
@@ -133,7 +133,7 @@ struct Arg
                 { TypeHandler<typename std::decay<T>::type>
                         ::set(*this, std::forward<T>(val)); }
 
-        WRUTIL_API uintmax_t toUInt(bool &ok) const;
+        uintmax_t toUInt(bool &ok) const;
 
         template <typename Next, typename ...Rest>
         static void setArray(Arg *next_out, Next &&next_in, Rest &&...rest)

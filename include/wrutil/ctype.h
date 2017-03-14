@@ -209,7 +209,7 @@ namespace std {
 
 
 template <>
-class ctype<char32_t> :
+class WRUTIL_API ctype<char32_t> :
         public ctype_base
 #if !WR_DINKUM  // not Dinkumware (MSVC++ etc)
         , public locale::facet
@@ -271,40 +271,35 @@ public:
         std::locale get_locale() const { return loc_; }
 
 protected:
-        virtual WRUTIL_API bool do_is(mask m, char_type c) const;
+        virtual bool do_is(mask m, char_type c) const;
 
-        virtual WRUTIL_API const char_type *do_is(const char_type *low,
-                                                  const char_type *high,
-                                                  mask *vec) const;
-        virtual WRUTIL_API const char_type *
-                do_scan_is(mask m, const char_type *begin,
-                           const char_type *end) const;
+        virtual const char_type *do_is(const char_type *low,
+                                       const char_type *high, mask *vec) const;
 
-        virtual WRUTIL_API const char_type *
-                do_scan_not(mask m, const char_type *begin,
-                            const char_type *end) const;
+        virtual const char_type *do_scan_is(mask m, const char_type *begin,
+                                            const char_type *end) const;
 
-        virtual WRUTIL_API char_type do_toupper(char_type c) const;
-        virtual WRUTIL_API const char_type *do_toupper(char_type *begin,
-                                                       char_type *end) const;
+        virtual const char_type *do_scan_not(mask m, const char_type *begin,
+                                             const char_type *end) const;
 
-        virtual WRUTIL_API char_type do_tolower(char_type c) const;
-        virtual WRUTIL_API const char_type *do_tolower(char_type *begin,
-                                                       char_type *end) const;
+        virtual char_type do_toupper(char_type c) const;
+        virtual const char_type *do_toupper(char_type *begin,
+                                            char_type *end) const;
 
-        virtual WRUTIL_API char_type do_widen(char c) const;
+        virtual char_type do_tolower(char_type c) const;
+        virtual const char_type *do_tolower(char_type *begin,
+                                            char_type *end) const;
 
-        virtual WRUTIL_API const char *do_widen(const char *begin,
-                                                const char *end,
-                                                char_type *dest) const;
+        virtual char_type do_widen(char c) const;
 
-        virtual WRUTIL_API char do_narrow(char_type c, char dflt) const;
+        virtual const char *do_widen(const char *begin, const char *end,
+                                     char_type *dest) const;
 
-        virtual WRUTIL_API const char_type *do_narrow(const char_type *begin,
-                                                      const char_type *end,
-                                                      char dflt,
-                                                      char *dest) const;
+        virtual char do_narrow(char_type c, char dflt) const;
 
+        virtual const char_type *do_narrow(const char_type *begin,
+                                           const char_type *end, char dflt,
+                                           char *dest) const;
 private:
         std::locale loc_;
 };

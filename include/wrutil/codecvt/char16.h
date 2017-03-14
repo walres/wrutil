@@ -22,7 +22,7 @@ namespace std {
 
 
 template <>
-class codecvt<char16_t, char, mbstate_t>
+class WRUTIL_API codecvt<char16_t, char, mbstate_t>
     : public locale::facet,
       public codecvt_base
 {
@@ -79,35 +79,33 @@ public:
         return do_max_length();
     }
 
-    static WRUTIL_API locale::id id;
+    static locale::id id;
 
 protected:
     explicit codecvt(const char*, size_t __refs = 0)
         : locale::facet(__refs) {}
 
-    WRUTIL_API ~codecvt();
+    ~codecvt();
 
-    virtual WRUTIL_API result do_out(state_type& __st, const intern_type* __frm,
-                                     const intern_type* __frm_end,
-                                     const intern_type*& __frm_nxt,
-                                     extern_type* __to, extern_type* __to_end,
-                                     extern_type*& __to_nxt) const;
+    virtual result do_out(state_type& __st, const intern_type* __frm,
+                          const intern_type* __frm_end,
+                          const intern_type*& __frm_nxt, extern_type* __to,
+                          extern_type* __to_end, extern_type*& __to_nxt) const;
 
-    virtual WRUTIL_API result do_in(state_type& __st, const extern_type* __frm,
-                                    const extern_type* __frm_end,
-                                    const extern_type*& __frm_nxt,
-                                    intern_type* __to, intern_type* __to_end,
-                                    intern_type*& __to_nxt) const;
+    virtual result do_in(state_type& __st, const extern_type* __frm,
+                         const extern_type* __frm_end,
+                         const extern_type*& __frm_nxt, intern_type* __to,
+                         intern_type* __to_end, intern_type*& __to_nxt) const;
 
-    virtual WRUTIL_API result do_unshift(state_type& __st, extern_type* __to,
-                                         extern_type* __to_end,
-                                         extern_type*& __to_nxt) const;
+    virtual result do_unshift(state_type& __st, extern_type* __to,
+                              extern_type* __to_end,
+                              extern_type*& __to_nxt) const;
 
-    virtual WRUTIL_API int do_encoding() const noexcept;
-    virtual WRUTIL_API bool do_always_noconv() const noexcept;
-    virtual WRUTIL_API int do_length(state_type&, const extern_type* __frm,
-                                   const extern_type* __end, size_t __mx) const;
-    virtual WRUTIL_API int do_max_length() const noexcept;
+    virtual int do_encoding() const noexcept;
+    virtual bool do_always_noconv() const noexcept;
+    virtual int do_length(state_type&, const extern_type* __frm,
+                          const extern_type* __end, size_t __mx) const;
+    virtual int do_max_length() const noexcept;
 };
 
 

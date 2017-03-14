@@ -38,23 +38,23 @@ using ArgVStorage = std::pair<std::vector<const char *>, std::vector<char>>;
 
 //--------------------------------------
 
-class ArgVBuilder
+class WRUTIL_API ArgVBuilder
 {
 public:
-        WRUTIL_API ArgVBuilder();
+        ArgVBuilder();
 
-        WRUTIL_API const char * const *argv();
-        WRUTIL_API string_view operator[](size_t i) const;
+        const char * const *argv();
+        string_view operator[](size_t i) const;
 
         bool empty() const  { return storage_.first.empty(); }
         size_t size() const { return storage_.first.size(); }
 
-        WRUTIL_API void clear();
-        WRUTIL_API ArgVStorage extract();
+        void clear();
+        ArgVStorage extract();
 
-        WRUTIL_API void append(const string_view &arg);
-        WRUTIL_API void insert(size_t pos, const string_view &arg);
-        WRUTIL_API void erase(size_t pos);
+        void append(const string_view &arg);
+        void insert(size_t pos, const string_view &arg);
+        void erase(size_t pos);
 
 private:
         void freeze();

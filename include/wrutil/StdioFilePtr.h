@@ -36,14 +36,14 @@
 
 namespace wr {
 
-struct StdioFileCloser
+struct WRUTIL_API StdioFileCloser
 {
         void operator()(FILE *file) const { ::fclose(file); }
 };
 
-struct StdioPipeCloser
+struct WRUTIL_API StdioPipeCloser
 {
-        WRUTIL_API void operator()(FILE *pipe) const;
+        void operator()(FILE *pipe) const;
 };
 
 

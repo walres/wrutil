@@ -37,26 +37,26 @@
 namespace wr {
 
 
-class SHA256
+class WRUTIL_API SHA256
 {
 public:
         using Hash = std::array<uint32_t, 8>;
 
         SHA256() { reset(); }
 
-        WRUTIL_API SHA256 &append(const void *data, size_t size);
+        SHA256 &append(const void *data, size_t size);
 
         SHA256 &append(const string_view &str)
                 { return append(str.data(), str.size()); }
 
-        WRUTIL_API const Hash &hash();
-        WRUTIL_API Hash chash() const;
-        WRUTIL_API SHA256 &reset();
+        const Hash &hash();
+        Hash chash() const;
+        SHA256 &reset();
 
         SHA256 &operator+=(const string_view &str) { return append(str); }
 
-        WRUTIL_API static std::string toString(const Hash &h);
-        WRUTIL_API static Hash toHash(const string_view &str);
+        static std::string toString(const Hash &h);
+        static Hash toHash(const string_view &str);
 
 private:
         static Hash &hash(Hash &h, uint32_t (&w)[64], size_t total_length);
