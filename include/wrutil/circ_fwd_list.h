@@ -56,10 +56,10 @@ public:
         circ_fwd_list_iterator(const this_type &other) = default;
         circ_fwd_list_iterator(this_type &&other) = default;
 
-        // support copying const-type iterators to non-const-type iterators
+        // support copying non-const-type iterators to const-type iterators
         template <typename X>
         circ_fwd_list_iterator(const circ_fwd_list_iterator<X> &other) :
-                  last_(other.last_), pos_(other.node()) {}
+                  last_(other.last_), pos_(other.pos_) {}
 
         circ_fwd_list_iterator(const node_ptr_type *last, node_ptr_type pos) :
                 last_(last), pos_(pos) {}
@@ -99,14 +99,14 @@ public:
         circ_fwd_list_iterator &operator=(const this_type &other) = default;
         circ_fwd_list_iterator &operator=(this_type &&other) = default;
 
-        // support copying const-type iterators to non-const-type iterators
+        // support copying non-const-type iterators to const-type iterators
         template <typename U> circ_fwd_list_iterator &
         operator=(
                 circ_fwd_list_iterator<U> &other
         )
         {
                 last_ = other.last_;
-                pos_ = other.node();
+                pos_ = other.pos_;
                 return *this;
         }
 
