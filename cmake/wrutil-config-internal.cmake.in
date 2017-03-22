@@ -3,6 +3,7 @@ set(WRUTIL_VERSION_MINOR @WRUTIL_VERSION_MINOR@)
 set(WRUTIL_VERSION_PATCH @WRUTIL_VERSION_PATCH@)
 
 set(Boost_INCLUDE_DIRS "@Boost_INCLUDE_DIRS@")
+set(Boost_LIBRARY_DIRS "@Boost_LIBRARY_DIRS@")
 set(Boost_LIBRARIES "@Boost_LIBRARIES@")
 set(WRUTIL_SYS_LIBS "@WRUTIL_SYS_LIBS@")
 set(WRDEBUG_SYS_LIBS "@WRDEBUG_SYS_LIBS@")
@@ -11,6 +12,7 @@ include_directories(@CMAKE_CURRENT_SOURCE_DIR@/include)
 include_directories(@CMAKE_CURRENT_BINARY_DIR@/include)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${WRUTIL_ROOT}/lib)
+link_directories(${Boost_LIBRARY_DIRS})
 
 # for check_cxx_*() functions
 list(APPEND CMAKE_REQUIRED_INCLUDES @CMAKE_CURRENT_SOURCE_DIR@/include)

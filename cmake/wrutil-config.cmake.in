@@ -5,13 +5,14 @@ set(WRUTIL_VERSION_MINOR @WRUTIL_VERSION_MINOR@)
 set(WRUTIL_VERSION_PATCH @WRUTIL_VERSION_PATCH@)
 
 set(Boost_INCLUDE_DIRS "@Boost_INCLUDE_DIRS@")
+set(Boost_LIBRARY_DIRS "@Boost_LIBRARY_DIRS@")
 set(Boost_LIBRARIES "@Boost_LIBRARIES@")
 set(WRUTIL_SYS_LIBS "@WRUTIL_SYS_LIBS@")
 set(WRDEBUG_SYS_LIBS "@WRDEBUG_SYS_LIBS@")
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${WRUTIL_ROOT}/include)
-link_directories(${Boost_LIBRARIES})
+link_directories(${Boost_LIBRARY_DIRS})
 link_directories(${WRUTIL_ROOT}/lib)
 
 # for check_cxx_*() functions

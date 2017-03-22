@@ -142,7 +142,7 @@ find_package(Boost 1.44.0 REQUIRED ${NEED_BOOST_LIBS})
 
 if (Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
-        link_directories(${Boost_LIBRARIES})
+        link_directories(${Boost_LIBRARY_DIRS})
 else()
         message(SEND_ERROR "Could not find all required Boost libraries (${Boost_LIBRARIES})")
 endif()
