@@ -232,12 +232,21 @@ inline void last_write_time(const fs_impl::path &p, file_time_type new_time,
 
 } // namespace wr
 
+//--------------------------------------
 
 namespace std {
 
 
-template <> inline void swap(wr::fs_impl::path &a, wr::fs_impl::path &b)
-        { a.swap(b); }
+template <> inline void
+swap(
+        wr::fs_impl::path &a,
+        wr::fs_impl::path &b
+) noexcept
+{
+        a.swap(b);
+}
+
+//--------------------------------------
 
 template <>
 struct is_error_condition_enum<boost::system::errc::errc_t> :
@@ -249,6 +258,7 @@ struct is_error_condition_enum<boost::system::errc::errc_t> :
 
 #endif // WR_HAVE_STD_FILESYSTEM
 
+//--------------------------------------
 
 namespace wr {
 
