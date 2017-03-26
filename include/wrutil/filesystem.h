@@ -241,7 +241,7 @@ template <> inline void
 swap(
         wr::fs_impl::path &a,
         wr::fs_impl::path &b
-) noexcept
+) noexcept(noexcept(a.swap(b)))
 {
         a.swap(b);
 }
