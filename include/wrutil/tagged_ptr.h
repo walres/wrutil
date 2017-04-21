@@ -87,7 +87,7 @@ public:
                 if ((bits & tagMask()) != 0) {
                         throw std::invalid_argument("tagged_ptr::ptr(): incorrectly aligned pointer");
                 }
-                bits_ = bits;
+                bits_ = (bits_ & tagMask()) | bits;
                 return *this;
         }
 

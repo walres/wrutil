@@ -458,6 +458,7 @@ add_executable(FormatPrintTests test/FormatPrintTests.cxx)
 add_executable(OptionTests test/OptionTests.cxx test/OptionTestUtils.cxx)
 add_executable(SuboptionTests test/SuboptionTests.cxx test/OptionTestUtils.cxx)
 add_executable(StringViewTests test/StringViewTests.cxx)
+add_executable(TaggedPtrTests test/TaggedPtrTests.cxx)
 add_executable(U8StringViewTests test/U8StringViewTests.cxx)
 
 set(TESTS
@@ -468,6 +469,7 @@ set(TESTS
         OptionTests
         SuboptionTests
         StringViewTests
+        TaggedPtrTests
         U8StringViewTests
 )
 
