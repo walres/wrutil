@@ -307,6 +307,9 @@ using fs_impl::temp_directory_path;
 WRUTIL_API bool path_has_prefix(const path &p, const path &prefix);
 WRUTIL_API bool is_separator(path::value_type c);
 
+WRUTIL_API bool is_executable(const fs_impl::path &p);
+WRUTIL_API bool is_executable(const fs_impl::path &p,
+                              fs_error_code &ec) noexcept;
 
 #if WR_HAVE_FSIMPL_PROXIMATE
 using fs_impl::proximate;
